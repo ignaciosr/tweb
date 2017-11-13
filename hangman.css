@@ -1,0 +1,217 @@
+header{
+	text-align: center;
+}
+
+
+.wrapper {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-flow: column;
+        min-height: 300px;
+    }
+
+.screen{
+	text-align: center;
+ 	align-items: center;
+    justify-content: center;
+/* 	display:flex;*/
+ 	background: white;
+ 	
+ 	/*margin: 4px;
+    padding: 5px;
+    border-radius: 7pt;
+    font-family: sans-serif;
+    font-size: 20px;*/
+    /*min-height: 200px;*/
+   	flex: 1;
+
+}
+.gword{
+	text-align: center;
+ 	align-items: center;
+    justify-content: center;
+ 	display:flex;
+ 	background: white;
+    font-family: sans-serif;
+    font-size:20px;
+	text-align: center;
+	color: white;
+    background: black;
+    min-height: 75px;
+    flex: 2;
+}
+.keyboard {
+	text-align: center;
+	color: white;
+	background: grey;
+	flex: 3;
+    /*order: 1;*/
+    display: grid;
+	grid-template-rows: repeat (5, 1fr);
+	grid-template-columns: repeat (6, 1fr);
+}
+
+.a{
+	grid-row: 1;
+	grid-column: 1;
+	color: white;
+	background: grey;
+}
+.b{
+	grid-row: 1;
+	grid-column: 2;
+	color: white;
+	background: grey;
+}
+.c{
+	grid-row: 1;
+	grid-column: 3;
+	color: white;
+	background: grey;
+}
+.d{
+	grid-row: 1;
+	grid-column: 4;
+	color: white;
+	background: grey;
+}
+.e{
+	grid-row: 1;
+	grid-column: 5;
+	color: white;
+	background: grey;
+}
+.f{
+	grid-row: 1;
+	grid-column: 6;
+	color: white;
+	background: grey;
+}
+.g{
+	grid-row: 2;
+	grid-column: 1;
+	color: white;
+	background: grey;
+}
+.h{
+	grid-row: 2;
+	grid-column: 2;
+	color: white;
+	background: grey;
+}
+.i{
+	grid-row: 2;
+	grid-column: 3;
+	color: white;
+	background: grey;
+}
+.j{
+	grid-row: 2;
+	grid-column: 4;
+	color: white;
+	background: grey;
+}
+.k{
+	grid-row: 2;
+	grid-column: 5;
+	color: white;
+	background: grey;
+}
+.l{
+	grid-row: 2;
+	grid-column: 6;
+	color: white;
+	background: grey;
+}
+.m{
+	grid-row: 3;
+	grid-column: 1;
+	color: white;
+	background: grey;
+}
+.n{
+	grid-row: 3;
+	grid-column: 2;
+	color: white;
+	background: grey;
+}
+.o{
+	grid-row: 3;
+	grid-column: 3;
+	color: white;
+	background: grey;
+}
+.p{
+	grid-row: 3;
+	grid-column: 4;
+	color: white;
+	background: grey;
+}
+.q{
+	grid-row: 3;
+	grid-column: 5;
+	color: white;
+	background: grey;
+}
+.r{
+	grid-row: 3;
+	grid-column: 6;
+	color: white;
+	background: grey;
+}
+.s{
+	grid-row: 4;
+	grid-column: 1;
+	color: white;
+	background: grey;
+}
+.t{
+	grid-row: 4;
+	grid-column: 2;
+	color: white;
+	background: grey;
+}
+.u{
+	grid-row: 4;
+	grid-column: 3;
+	color: white;
+	background: grey;
+}
+.v{
+	grid-row: 4;
+	grid-column: 4;
+	color: white;
+	background: grey;
+}
+.w{
+	grid-row: 4;
+	grid-column: 5;
+	color: white;
+	background: grey;
+}
+.x{
+	grid-row: 4;
+	grid-column: 6;
+	color: white;
+	background: grey;
+}
+.y{
+	grid-row: 5;
+	grid-column: 1;
+	color: white;
+	background: grey;
+}
+.z{
+	grid-row: 5;
+	grid-column: 2;
+	color: white;
+	background: grey;
+}
+.newgame{
+	grid-row: 5;
+	grid-column-start: 3;
+	grid-column-end: 7;
+	color: white;
+	background: grey;
+}

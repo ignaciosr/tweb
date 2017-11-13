@@ -1,0 +1,26 @@
+{
+  "name": "Hangman Game",
+  "short_name": "Hangman",
+  "description": "A simply hangman game app.",
+  "display": "standalone",
+  "background_color": "#000000",
+  "icons": [{
+    "src": "hangman-icon-1x.png",
+    "sizes": "48x48",
+    "type": "image/png"
+  }, {
+    "src": "hangman-icon-2x.png",
+    "sizes": "96x96",
+    "type": "image/png"
+  }, {
+    "src": "hangman-icon-4x.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }, {
+    "src": "hangman-icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "start_url": "hangman.html",
+  "theme_color": "#317EFB"
+  }
