@@ -1,1 +1,736 @@
-<!DOCTYPE html><html lang="en"><head>	<meta charset="UTF-8">	<meta name="theme-color" content="#317EFB"/>    <meta name="viewport" content="width=device-width, initial-scale=1">	<title>HAGMAN GAME</title>	<link rel="manifest" href="manifest.json"><	<link rel="stylesheet" type="text/css" href="hangman.css">	</head><body>	<form>		<div class="wrapper" id="wrapper" >		    <p id="mylives"></p>			<p id="wins"></p>			<p id="losses"></p>			<canvas class="screen" id="myCanvas" width="325" height="325">							</canvas>				<!-- Hangman -->			</div>			<div class="gword" id="gword" tabindex="1">			<button id="hint">Hint</button>			</div>			<div class="keyboard" id="keyboard">				<!-- Keyboard -->				<input type="button" class="a" id="a" value="A" >				<input type="button" class="b" id="b" value="B">				<input type="button" class="c" id="c" value="C">				<input type="button" class="d" id="d" value="D">				<input type="button" class="e" id="e" value="E">				<input type="button" class="f" id="f" value="F">				<input type="button" class="g" id="g" value="G">				<input type="button" class="h" id="h" value="H">				<input type="button" class="i" id="i" value="I">				<input type="button" class="j" id="j" value="J">				<input type="button" class="k" id="k" value="K">				<input type="button" class="l" id="l" value="L">				<input type="button" class="m" id="m" value="M">				<input type="button" class="n" id="n" value="N">				<input type="button" class="o" id="o" value="O">				<input type="button" class="p" id="p" value="P">				<input type="button" class="q" id="q" value="Q">				<input type="button" class="r" id="r" value="R">				<input type="button" class="s" id="s" value="S">				<input type="button" class="t" id="t" value="T">				<input type="button" class="u" id="u" value="U">				<input type="button" class="v" id="v" value="V">				<input type="button" class="w" id="w" value="W">				<input type="button" class="x" id="x" value="X">				<input type="button" class="y" id="y" value="Y">				<input type="button" class="z" id="z" value="Z">				<input type="button" class="newgame" id="newgame" value="Start new game">			</div>				</div>		<footer>		</footer>		<script>			if (navigator.serviceWorker) {  	 				navigator.serviceWorker.register('/sw.js').then(registration => {		      		console.log('congrats. scope is: ', registration.scope);		    	}).catch(error => {		    		console.log('sorry', error);		    	});		    }		    			document.getElementById("gword").innerHTML ="";			var cntL;			var count;			var wins;			var losses;			var notification;			Notification.requestPermission(function(permission){				if (permission === "granted") {				console.log('Thank you');			}			});			function error(){				alert("Geolocation is not supported by your browser")			}			// function doWorker1(){			// 	myWorker = new Worker("doTime.js");			// 	myWorker.onmessage = function(e) {			// 	console.log(e.data);			// 	notification = new Notification('Your are so bad at this game...');			// 	};			// }			navigator.geolocation.getCurrentPosition(function(position){			latitude  = position.coords.latitude;			longitude = position.coords.longitude;			console.log(latitude, longitude);			},error);			var wordChain;			var showLives = document.getElementById("mylives");			var showlosses = document.getElementById("losses");			var showwins = document.getElementById("wins");			var hint;			wordChain = newGame();			var myWorker;			var isLetter = false;			//Check the pressed key			window.onload = function() { 				document.onkeypress = keyPressedFunction;			}			function keyPressedFunction(event){				var letterPressed = String.fromCharCode(event.which);					if (event.which !=0 && event.which !=13) {						// console.log(letterPressed.toUpperCase());						isLetter =checkLetter(letterPressed.toUpperCase());						if (isLetter == false){							draw();						}							isFinish();						}			}				var checkedLetter = new Array(30);				document.getElementById("keyboard").addEventListener('click', function(e){				console.log(e.target.value);				var checked = false;				for (var i = 0; i < checkedLetter.length; i++) {					if (checkedLetter[i] == e.target.value){						checked = true;					}				}				checkedLetter.push(e.target.value);				isLetter = checkLetter(e.target.value);				if (isLetter == false && checked == false){					draw();				}				isFinish();			});			var newgame = document.getElementById("newgame");			newgame.addEventListener("click", function(){				document.getElementById("gword").innerHTML = "";				wordChain = newGame();			});						var Rwg = require('random-word-generator');var generator = new Rwg();console.log(generator.generate()); // yields something like Takalonazu	function isFinish(){		var isComplete = true;		var result = document.getElementById("gword").innerHTML;		var newWord1 = result.split(" ");		for (var i = 0; i <= newWord1.length-1; i++){			if (newWord1[i] == "_" ){				isComplete = false;			}		}		if (isComplete){			drawText("You Win!!",90,200, "bold 50px serif","#FF0000");			if (wins == null){					sessionStorage.setItem("wins", 1);				}else{					sessionStorage.setItem("wins", (parseInt(wins)+1));				}			notification = new Notification('Your latitude is: ' + latitude );		}	}	function checkLetter(letter){		var isLetter = false;		var result = document.getElementById("gword").innerHTML;		var newWord1 = result.split(" ");		for (var i = 0; i <= (newWord1.length-1); i++){			if (wordChain[i] == letter) {				isLetter = true;				newWord1[i] = letter;				} else {					newWord1[i] = newWord1[i];				}			}		document.getElementById("gword").innerHTML = newWord1.join(" ");		return isLetter;	}	function draw() {			switch(count)			{			 case 6:				drawGallows();			 break;			 case 5:			 	drawHead();			 break;			 case 4:				drawBody();			 break;			 case 3:				drawArm1();			 break;			 case 2:			 	drawArm2();			 break;			 case 1:			 	drawLeg1();			 break;			 case 0:			 	drawLeg2();				drawText("You Lose!!",90,200, "bold 50px serif","#FF0000");				console.log("Losses: "+ losses + ": "+ parseInt(losses));				//No session storaged				if (losses == null){					sessionStorage.setItem("losses", 1);				}else{					sessionStorage.setItem("losses", (parseInt(losses)+1));				}				notification = new Notification('Your latitude is: ' + latitude );			 break;		}	function doWorker(k){		myWorker = new Worker("doWork.js");		myWorker.postMessage(k);		myWorker.onmessage = function(e) {		console.log(e.data);		showLives.innerHTML = e.data;		};	}		function drawGallows(){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");		context.moveTo(120,305);		context.lineTo(280,305);		context.moveTo(260,305);		context.lineTo(260,70);		context.lineTo(180,70);		context.lineTo(180,96);		context.stroke();		count -= 1;		doWorker(6);		 // showLives.innerHTML = "You have 6 lives";	}	function drawHead(){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");	    context.beginPath();		context.arc(180,120,23,0,Math.PI*2,false);		context.closePath();		context.stroke();		count -=1;		doWorker(5);		 // showLives.innerHTML = "You have 5 lives";    }	function drawBody(){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");	    context.moveTo(180,143);		context.lineTo(180,248);		context.stroke();		count -=1;		doWorker(4);		// showLives.innerHTML = "You have 4 lives";   }   function drawArm1(){      	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");		context.moveTo(180,175);		context.lineTo(142,167);		context.stroke();		count -=1;		doWorker(3);		// showLives.innerHTML = "You have 3 lives";	}	function drawArm2(){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");	  	context.moveTo(180,175);      	context.lineTo(218,167);      	context.stroke();		count -=1;		doWorker(2);		// showLives.innerHTML = "You have 2 lives";   }    function drawLeg1(){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");	  	context.moveTo(180,245);	  	context.lineTo(145,270);	  	context.stroke();	  	count -=1;	  	doWorker(1);		// showLives.innerHTML = "You have 1 lives";  }   function drawLeg2(){   		var c = document.getElementById("myCanvas");		var context = c.getContext("2d");	  	context.moveTo(180,245);	  	context.lineTo(215,270);	  	context.stroke();		count -=1;		doWorker(0);		   // showLives.innerHTML = "You have 0 lives";  }	  		}	function drawText(word,textX,textY,font,color){	   	var c = document.getElementById("myCanvas");		var context = c.getContext("2d");        context.font = font;		context.fillStyle = color		context.fillText(word, textX, textY);    }	function newGame(){		var c = document.getElementById("myCanvas");		var context = c.getContext("2d");		if (window.sessionStorage) {				// sessionStorage.removeItem('losses');				// sessionStorage.removeItem('wins');				wins = sessionStorage.getItem("wins");				losses = sessionStorage.getItem("losses");		}		else {				throw new Error('Tu Browser no soporta sessionStorage!');		}		showlosses.innerHTML = 'losses: '+losses;		showwins.innerHTML = 'wins: '+wins;		if(losses==undefined){			showlosses.innerHTML = 'losses: '+'0';		}		if(wins==undefined){			showwins.innerHTML = 'wins: '+'0';		}		context.clearRect(0, 0, c.width, c.height);		context.beginPath();		ajuste();		//setFullscreen();		count = 6;		// doWorker(7);		showLives.innerHTML = "You have 7 lives";	fetch('https://cors-anywhere.herokuapp.com/https://es.wikipedia.org/wiki/HTML', {  }).then(function(response) {    return response.text();  }).then(function(body){ /* console.log(body);*/   var newArray = body.replace(/<[^>]+>/gm, '');  var array1 = newArray.split(" ").filter(function(c){    if (c.length < 4 ){          }else{            return c;    }  });  var array2 = new Array();  for (var i =0; array1.length > i; i++){    if(array1[i].includes(',') || array1[i].includes('1') || array1[i].includes('1')       || array1[i].includes('3') || array1[i].includes('4') || array1[i].includes('5')       || array1[i].includes('6')|| array1[i].includes('0') || array1[i].includes('"')       || array1[i].includes('7') || array1[i].includes(8) || array1[i].includes('9')       || array1[i].includes('{') || array1[i].includes('}') || array1[i].includes('.')       || array1[i].includes('&') || array1[i].includes(' ') || array1[i].includes('=')       || array1[i].includes(':') || array1[i].includes('-') || array1[i].includes('(')       || array1[i].includes(')') || array1[i].includes(';') || array1[i].includes('|')       || array1[i].includes('/') || array1[i].includes('?') || array1[i].includes(" ")       || array1[i].length < 8 || array1[i].includes("é") || array1[i].includes("á")       || array1[i].includes("í")|| array1[i].includes("ó") || array1[i].includes("ú")       || array1[i].includes("]") || array1[i].includes("[") || array1[i].length > 15              ){           } else{      array2.push (array1[i]);    }  }  });var index = Math.round(Math.random()*array2.length);var word = new String (array2[index]);console.log(word);		// var words = new Array("MULTIMEDIA", "SERVIDOR", "PROTOCOLO", "NAVEGADOR");		// var index = Math.round(Math.random()*4);		// var word = new String (words[index]);		for (var i = 0; i < word.length; i++) {			document.getElementById("gword").innerHTML+="_ ";		}		var wordC = word.split("");		console.log(wordC);		return wordC;	}        /*function setFullscreen(){            var w = window.innerWidth / myCanvas.width/2;            var h = window.innerHeight / myCanvas.height/2;            var scale = Math.min(h, w);            myCanvas.style.width = (myCanvas.width * scale) + 'px';            myCanvas.style.height = (myCanvas.height * scale) + 'px';            myCanvas.style.position = 'fixed';            myCanvas.style.left = '50%';            myCanvas.style.top = '75%';            myCanvas.style.marginLeft = -(myCanvas.width * scale) / 2 + 'px';            myCanvas.style.marginTop = -(myCanvas.height * scale) / 2 + 'px';			draw();        }*/				function ajuste() {			var 				// Obtain a reference to the canvas element				// using its id.				htmlCanvas = document.getElementById('myCanvas'),						  	// Obtain a graphics context on the			  	// canvas element for drawing.			  	context = htmlCanvas.getContext('2d');			// Start listening to resize events and			// draw canvas.			initialize(); 			function initialize() {				// Register an event listener to				// call the resizeCanvas() function each time 				// the window is resized.				window.addEventListener('resize', resizeCanvas, false);								// Draw canvas border for the first time.				resizeCanvas();			}							// Display custom canvas.			// In this case it's a blue, 5 pixel border that 			// resizes along with the browser window.								function redraw() {				context.strokeStyle = 'blue';				context.lineWidth = '5';				var w = wrapper.innerWidth ;				var h = wrapper.innerHeight ;				var scale = Math.min(h, w);				myCanvas.style.width = (myCanvas.width * scale) + 'px';				myCanvas.style.height = (myCanvas.height * scale) + 'px';				myCanvas.style.position = 'fixed';				myCanvas.style.left = '25%';				myCanvas.style.top = '0%';				myCanvas.style.marginLeft = -(myCanvas.width * scale) / 2 + 'px';				myCanvas.style.marginTop = -(myCanvas.height * scale) / 2 + 'px';			}					// Runs each time the DOM window resize event fires.			// Resets the canvas dimensions to match window,			// then draws the new borders accordingly.			function resizeCanvas() {				redraw();			}				};	</script></form></body></html>
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="theme-color" content="#317EFB"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>HAGMAN GAME</title>
+	<link rel="manifest" href="manifest.json"><
+	<link rel="stylesheet" type="text/css" href="hangman.css">
+</head>
+
+<body>
+	
+	<form>
+
+		<div class="wrapper" id="wrapper" >
+
+			<p id="mylives"></p>
+			<p id="wins"></p>
+			<p id="losses"></p>
+
+
+			<!-- Representation -->
+			<canvas class="screen" id="myCanvas" width="325" height="325">	
+
+			</canvas>
+
+		</div>
+
+		<div class="gword" id="gword" tabindex="1">
+
+		</div>
+
+		<div class="keyboard" id="keyboard">
+
+			<!-- Keyboard -->
+
+			<input type="button" class="a" id="a" value="A" >
+
+			<input type="button" class="b" id="b" value="B">
+
+			<input type="button" class="c" id="c" value="C">
+
+			<input type="button" class="d" id="d" value="D">
+
+			<input type="button" class="e" id="e" value="E">
+
+			<input type="button" class="f" id="f" value="F">
+
+			<input type="button" class="g" id="g" value="G">
+
+			<input type="button" class="h" id="h" value="H">
+
+			<input type="button" class="i" id="i" value="I">
+
+			<input type="button" class="j" id="j" value="J">
+
+			<input type="button" class="k" id="k" value="K">
+
+			<input type="button" class="l" id="l" value="L">
+
+			<input type="button" class="m" id="m" value="M">
+
+			<input type="button" class="n" id="n" value="N">
+
+			<input type="button" class="o" id="o" value="O">
+
+			<input type="button" class="p" id="p" value="P">
+
+			<input type="button" class="q" id="q" value="Q">
+
+			<input type="button" class="r" id="r" value="R">
+
+			<input type="button" class="s" id="s" value="S">
+
+			<input type="button" class="t" id="t" value="T">
+
+			<input type="button" class="u" id="u" value="U">
+
+			<input type="button" class="v" id="v" value="V">
+
+			<input type="button" class="w" id="w" value="W">
+
+			<input type="button" class="x" id="x" value="X">
+
+			<input type="button" class="y" id="y" value="Y">
+
+			<input type="button" class="z" id="z" value="Z">
+
+			<input type="button" class="newgame" id="newgame" value="Start new game">
+
+		</div>
+		
+
+	</div>
+
+	<footer>
+
+
+	</footer>
+
+	<script type="text/javascript">
+		if (navigator.serviceWorker) {  	
+			navigator.serviceWorker.register('/sw.js').then(registration => {
+				console.log('congrats. scope is: ', registration.scope);
+			}).catch(error => {
+				console.log('sorry', error);
+			});
+		}
+
+
+		document.getElementById("gword").innerHTML ="";
+		var cntL;
+		var count;
+		var wins;
+		var losses;
+		var notification;
+
+		var showLives = document.getElementById("mylives");
+		var showlosses = document.getElementById("losses");
+		var showwins = document.getElementById("wins");
+
+
+		Notification.requestPermission(function(permission){
+
+			if (permission === "granted") {
+
+				console.log('Thank you');
+
+			}
+
+		});
+
+
+
+		function error(){
+
+			alert("Geolocation is not supported by your browser")
+
+		}
+
+		var newgame = document.getElementById("newgame");
+
+		newgame.addEventListener("click", function(){
+
+			document.getElementById("gword").innerHTML = "";			
+
+		});
+
+
+
+		fetch('https://cors-anywhere.herokuapp.com/https://es.wikipedia.org/wiki/HTML', {
+		}).then(function(response) {
+			return response.text();
+		}).then(function(body){
+			var newArray = body.replace(/<[^>]+>/gm, '');
+			var array1 = newArray.split(" ").filter(function(c){
+				if (c.length < 4 ){
+
+				}else{
+
+					return c;
+				}
+			});
+			var array2 = new Array();
+			for (var i =0; array1.length > i; i++){
+				if(array1[i].includes(',') || array1[i].includes('1') || array1[i].includes('1')
+					|| array1[i].includes('3') || array1[i].includes('4') || array1[i].includes('5')
+					|| array1[i].includes('6')|| array1[i].includes('0') || array1[i].includes('"')
+					|| array1[i].includes('7') || array1[i].includes(8) || array1[i].includes('9')
+					|| array1[i].includes('{') || array1[i].includes('}') || array1[i].includes('.')
+					|| array1[i].includes('&') || array1[i].includes(' ') || array1[i].includes('=')
+					|| array1[i].includes(':') || array1[i].includes('-') || array1[i].includes('(')
+					|| array1[i].includes(')') || array1[i].includes(';') || array1[i].includes('|')
+					|| array1[i].includes('/') || array1[i].includes('?') || array1[i].includes(" ")
+					|| array1[i].length < 8 || array1[i].includes("é") || array1[i].includes("á")
+					|| array1[i].includes("í")|| array1[i].includes("ó") || array1[i].includes("ú")
+					|| array1[i].includes("]") || array1[i].includes("[") || array1[i].length > 15 
+
+					){ 
+				} else{
+					array2.push (array1[i]);
+				}
+			}
+			var index = Math.round(Math.random()*array2.length);
+			var word = new String (array2[index]);
+			return word;
+
+		}).then(function(unknownW){
+			startNewGame(unknownW);
+			console.log(unknownW);
+		});
+
+
+
+		navigator.geolocation.getCurrentPosition(function(position){
+
+			latitude  = position.coords.latitude;
+
+			longitude = position.coords.longitude;
+
+			console.log(latitude, longitude);
+
+		},error);
+
+
+		function isFinish(){
+
+			var isComplete = true;
+
+			var result = document.getElementById("gword").innerHTML;
+			console.log('FUNCTION IS FINISH'+result);
+
+			var newWord1 = result.split(" ");
+
+			for (var i = 0; i <= newWord1.length-1; i++){
+
+				if (newWord1[i] == "_" ){
+
+					isComplete = false;
+
+				}
+
+			}
+
+			if (isComplete){
+
+				drawText("You Win!!",90,200, "bold 50px serif","#FF0000");
+				if (wins == null){
+					sessionStorage.setItem("wins", 1);
+				}else{
+					sessionStorage.setItem("wins", (parseInt(wins)+1));
+				}
+				notification = new Notification('Your latitude is: ' + latitude );
+
+			}
+
+		}
+
+
+
+		function checkLetter(letter, uWord){
+
+			var isLetter = false;
+
+			var result = document.getElementById("gword").innerHTML;
+
+			var newWord1 = result.split(" ");
+
+			for (var i = 0; i <= (newWord1.length-1); i++){
+
+				if (uWord[i] == letter) {
+
+					isLetter = true;
+
+					newWord1[i] = letter;
+
+				} else {
+
+					newWord1[i] = newWord1[i];
+
+				}
+
+			}
+
+			document.getElementById("gword").innerHTML = newWord1.join(" ");
+
+			return isLetter;
+
+		}
+
+
+
+		function draw() {
+
+			switch(count)
+
+			{
+
+				case 6:
+
+				drawGallows();
+
+				break;
+
+				case 5:
+				drawHead();
+
+				break;
+
+				case 4:
+
+				drawBody();
+
+				break;
+
+				case 3:
+
+				drawArm1();
+
+				break;
+
+				case 2:
+
+				drawArm2();
+
+				break;
+
+				case 1:
+
+				drawLeg1();
+
+				break;
+
+				case 0:
+
+				drawLeg2();
+
+				drawText("You Lose!!",90,200, "bold 50px serif","#FF0000");
+				console.log("Losses: "+ losses + ": "+ parseInt(losses));
+				//No session storaged
+				if (losses == null){
+					sessionStorage.setItem("losses", 1);
+				}else{
+					sessionStorage.setItem("losses", (parseInt(losses)+1));
+				}
+				notification = new Notification('Your latitude is: ' + latitude );
+
+				break;
+
+			}
+
+
+
+			function doWorker(k){
+
+				myWorker = new Worker("doWork.js");
+
+				myWorker.postMessage(k);
+
+				myWorker.onmessage = function(e) {
+
+					console.log(e.data);
+
+					showLives.innerHTML = e.data;
+
+				};
+
+			}
+
+
+			function drawGallows(){
+
+
+
+				var c = document.getElementById("myCanvas");
+
+				var context = c.getContext("2d");
+
+				context.moveTo(120,305);
+
+				context.lineTo(280,305);
+
+				context.moveTo(260,305);
+
+				context.lineTo(260,70);
+
+				context.lineTo(180,70);
+
+				context.lineTo(180,96);
+
+				context.stroke();
+
+				count -= 1;
+
+				doWorker(6);
+
+		 // showLives.innerHTML = "You have 6 lives";
+
+		}
+
+		function drawHead(){
+
+
+
+			var c = document.getElementById("myCanvas");
+
+			var context = c.getContext("2d");
+
+			context.beginPath();
+
+			context.arc(180,120,23,0,Math.PI*2,false);
+
+			context.closePath();
+
+			context.stroke();
+
+			count -=1;
+
+			doWorker(5);
+
+		 // showLives.innerHTML = "You have 5 lives";
+
+		}
+
+		function drawBody(){
+
+
+
+			var c = document.getElementById("myCanvas");
+
+			var context = c.getContext("2d");
+
+			context.moveTo(180,143);
+
+			context.lineTo(180,248);
+
+			context.stroke();
+
+			count -=1;
+
+			doWorker(4);
+
+		// showLives.innerHTML = "You have 4 lives";
+
+	}
+
+	function drawArm1(){
+
+
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+
+		context.moveTo(180,175);
+
+		context.lineTo(142,167);
+
+		context.stroke();
+
+		count -=1;
+
+		doWorker(3);
+
+		// showLives.innerHTML = "You have 3 lives";
+
+	}
+
+	function drawArm2(){
+
+
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+
+		context.moveTo(180,175);
+
+		context.lineTo(218,167);
+
+		context.stroke();
+
+		count -=1;
+
+		doWorker(2);
+
+		// showLives.innerHTML = "You have 2 lives";
+
+	}
+
+	function drawLeg1(){
+
+
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+
+		context.moveTo(180,245);
+
+		context.lineTo(145,270);
+
+		context.stroke();
+
+		count -=1;
+
+		doWorker(1);
+
+		// showLives.innerHTML = "You have 1 lives";
+
+	}
+
+	function drawLeg2(){
+
+
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+
+		context.moveTo(180,245);
+
+		context.lineTo(215,270);
+
+		context.stroke();
+
+		count -=1;
+
+		doWorker(0);
+
+		   // showLives.innerHTML = "You have 0 lives";
+
+		}
+
+
+
+	}
+
+	function drawText(word,textX,textY,font,color){
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+
+		context.font = font;
+
+		context.fillStyle = color
+
+		context.fillText(word, textX, textY);
+
+	}
+
+
+
+	function startNewGame(uWord){
+
+
+
+		var hint;
+		var wordChain;
+
+		var c = document.getElementById("myCanvas");
+
+		var context = c.getContext("2d");
+		if (window.sessionStorage) {
+				// sessionStorage.removeItem('losses');
+				// sessionStorage.removeItem('wins');
+				wins = sessionStorage.getItem("wins");
+				losses = sessionStorage.getItem("losses");
+			}
+			else {
+				throw new Error('Tu Browser no soporta sessionStorage!');
+			}
+			showlosses.innerHTML = 'losses: '+losses;
+			showwins.innerHTML = 'wins: '+wins;
+			if(losses==undefined){
+				showlosses.innerHTML = 'losses: '+'0';
+			}
+			if(wins==undefined){
+				showwins.innerHTML = 'wins: '+'0';
+			}
+			context.clearRect(0, 0, c.width, c.height);
+
+			context.beginPath();
+			ajuste();
+		//setFullscreen();
+
+		count = 6;
+
+		// doWorker(7);
+		showLives.innerHTML = "You have 7 lives";
+
+
+
+		for (var i = 0; i < uWord.length; i++) {
+
+			document.getElementById("gword").innerHTML+="_ ";
+
+		}
+
+
+
+		wordChain = uWord.toUpperCase().split("");
+
+
+		console.log("WORD CHAIN: "+ wordChain);
+
+		var myWorker;
+
+		var isLetter = false;
+
+
+
+		var checkedLetter = new Array(30);
+
+		document.addEventListener('keypress', (event) => {
+
+			var checked = false;
+
+			for (var i = 0; i < checkedLetter.length; i++) {
+				if (checkedLetter[i] == event.key){
+					checked = true;
+				}
+			}
+
+			checkedLetter.push(event.key);
+
+			isLetter =checkLetter(event.key.toUpperCase(), wordChain);
+
+			if (isLetter == false && checked == false){
+
+				draw();
+
+			}
+
+			isFinish();
+
+		});
+
+
+		document.getElementById("keyboard").addEventListener('click', function(e){
+			console.log(e.target.value);
+
+			if (e.target.value == 'Start new game'){
+				return;
+			}
+
+			var checked = false;
+
+			for (var i = 0; i < checkedLetter.length; i++) {
+				if (checkedLetter[i] == e.target.value){
+					checked = true;
+				}
+			}
+
+
+			checkedLetter.push(e.target.value);
+
+			isLetter = checkLetter(e.target.value, wordChain);
+
+			if (isLetter == false && checked == false){
+
+				draw();
+
+			}
+			isFinish();
+
+		});
+
+	}
+
+
+
+
+        /*function setFullscreen(){
+            var w = window.innerWidth / myCanvas.width/2;
+            var h = window.innerHeight / myCanvas.height/2;
+            var scale = Math.min(h, w);
+
+            myCanvas.style.width = (myCanvas.width * scale) + 'px';
+            myCanvas.style.height = (myCanvas.height * scale) + 'px';
+            myCanvas.style.position = 'fixed';
+            myCanvas.style.left = '50%';
+            myCanvas.style.top = '75%';
+            myCanvas.style.marginLeft = -(myCanvas.width * scale) / 2 + 'px';
+            myCanvas.style.marginTop = -(myCanvas.height * scale) / 2 + 'px';
+			draw();
+		}*/
+		function ajuste() {
+			var 
+				// Obtain a reference to the canvas element
+				// using its id.
+				htmlCanvas = document.getElementById('myCanvas'),
+
+			  	// Obtain a graphics context on the
+			  	// canvas element for drawing.
+			  	context = htmlCanvas.getContext('2d');
+			// Start listening to resize events and
+			// draw canvas.
+			initialize();
+
+			function initialize() {
+				// Register an event listener to
+				// call the resizeCanvas() function each time 
+				// the window is resized.
+				window.addEventListener('resize', resizeCanvas, false);
+				
+				// Draw canvas border for the first time.
+				resizeCanvas();
+			}
+
+			// Display custom canvas.
+			// In this case it's a blue, 5 pixel border that 
+			// resizes along with the browser window.					
+			function redraw() {
+				context.strokeStyle = 'blue';
+				context.lineWidth = '5';
+				var w = wrapper.innerWidth ;
+				var h = wrapper.innerHeight ;
+				var scale = Math.min(h, w);
+
+				myCanvas.style.width = (myCanvas.width * scale) + 'px';
+				myCanvas.style.height = (myCanvas.height * scale) + 'px';
+				myCanvas.style.position = 'fixed';
+				myCanvas.style.left = '25%';
+				myCanvas.style.top = '0%';
+				myCanvas.style.marginLeft = -(myCanvas.width * scale) / 2 + 'px';
+				myCanvas.style.marginTop = -(myCanvas.height * scale) / 2 + 'px';
+			}
+
+			// Runs each time the DOM window resize event fires.
+			// Resets the canvas dimensions to match window,
+			// then draws the new borders accordingly.
+			function resizeCanvas() {
+				redraw();
+			}
+
+		};
+	</script>
+
+</form>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
