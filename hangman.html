@@ -8,7 +8,7 @@
 	<meta name="theme-color" content="#317EFB"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>HAGMAN GAME</title>
-	<link rel="manifest" href="manifest.json"><
+	<link rel="manifest" href="manifest.json">
 	<link rel="stylesheet" type="text/css" href="hangman.css">
 </head>
 
@@ -142,12 +142,10 @@
 
 		}
 
-		var newgame = document.getElementById("newgame");
-
-		newgame.addEventListener("click", function(){
-
-			document.getElementById("gword").innerHTML = "";			
-
+		var ngame = document.getElementById('newgame');
+		ngame.addEventListener('click', function(){
+			document.getElementById('gword').innerHTML = "";
+			location.reload();
 		});
 
 
@@ -166,23 +164,11 @@
 				}
 			});
 			var array2 = new Array();
+			var letters = /^[A-Za-z]+$/;
 			for (var i =0; array1.length > i; i++){
-				if(array1[i].includes(',') || array1[i].includes('1') || array1[i].includes('1')
-					|| array1[i].includes('3') || array1[i].includes('4') || array1[i].includes('5')
-					|| array1[i].includes('6')|| array1[i].includes('0') || array1[i].includes('"')
-					|| array1[i].includes('7') || array1[i].includes(8) || array1[i].includes('9')
-					|| array1[i].includes('{') || array1[i].includes('}') || array1[i].includes('.')
-					|| array1[i].includes('&') || array1[i].includes(' ') || array1[i].includes('=')
-					|| array1[i].includes(':') || array1[i].includes('-') || array1[i].includes('(')
-					|| array1[i].includes(')') || array1[i].includes(';') || array1[i].includes('|')
-					|| array1[i].includes('/') || array1[i].includes('?') || array1[i].includes(" ")
-					|| array1[i].length < 8 || array1[i].includes("é") || array1[i].includes("á")
-					|| array1[i].includes("í")|| array1[i].includes("ó") || array1[i].includes("ú")
-					|| array1[i].includes("]") || array1[i].includes("[") || array1[i].length > 15 
-
-					){ 
+				if(!array1[i].match(letters)){ 
 				} else{
-					array2.push (array1[i]);
+				   array2.push (array1[i]);
 				}
 			}
 			var index = Math.round(Math.random()*array2.length);
@@ -191,7 +177,9 @@
 
 		}).then(function(unknownW){
 			startNewGame(unknownW);
-			console.log(unknownW);
+		
+		}).catch(function(error2){
+			console.log(error2);
 		});
 
 
@@ -212,7 +200,6 @@
 			var isComplete = true;
 
 			var result = document.getElementById("gword").innerHTML;
-			console.log('FUNCTION IS FINISH'+result);
 
 			var newWord1 = result.split(" ");
 
@@ -626,6 +613,7 @@
 			console.log(e.target.value);
 
 			if (e.target.value == 'Start new game'){
+				// location.reload();
 				return;
 			}
 
