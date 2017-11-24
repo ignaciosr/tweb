@@ -1,0 +1,25 @@
+{
+  "name": "tweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hangman.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ignaciosr/tweb.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ignaciosr/tweb/issues"
+  },
+  "homepage": "https://github.com/ignaciosr/tweb#readme",
+  "dependencies": {
+    "moment": "^2.19.2"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  }
+}
