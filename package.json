@@ -4,7 +4,10 @@
   "description": "",
   "main": "hangman.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress -p",
+    "watch": "webpack --progress --watch",
+    "server": "webpack-dev-server --open"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,10 @@
     "moment": "^2.19.2"
   },
   "devDependencies": {
-    "webpack": "^3.8.1"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.7"
   }
 }
